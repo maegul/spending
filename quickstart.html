@@ -3,9 +3,41 @@
   <head>
     <title>Google Sheets API Quickstart</title>
     <meta charset='utf-8' />
+
+    <script src="https://d3js.org/d3-selection.v1.min.js"></script>
+
+    <style type="text/css">
+        
+        .quick_table {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            width: 50%;
+            margin: auto;
+            font-weight: 
+
+        }
+
+        .table_row {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: 100%;
+
+            border-bottom: solid 1px black;
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+        }
+
+
+
+
+    </style>
+    
   </head>
   <body>
-    <p>Google Sheets API Quickstart</p>
+    <h1>Errol's First Web App?????</h1>
 
     <!--Add buttons to initiate auth sequence and sign out-->
     <button id="authorize-button" style="display: none;">Authorize</button>
@@ -13,9 +45,27 @@
 
     <pre id="content"></pre>
 
+    <!-- <button id='add_val'>Add Two Values</button> -->
+
+
+
+    <form id='add_val'>
+      Cost:<br>
+      <input type="number" name="cost" id="cost" value="cost">
+      <br>
+      Category:<br>
+      <input type="text" name="category" id="category" value="category">
+      <br><br>
+      <input type="submit" value="Submit">
+    </form> 
+
+
+
+    <div id='errol_test_content' class='quick_table'></div>
+
     <script type="text/javascript">
       // Client ID and API key from the Developer Console
-      var CLIENT_ID = '<YOUR_CLIENT_ID>';
+      var CLIENT_ID = '528290549075-qscpj2glhuk1aa27v31urr5c9a96n0ok.apps.googleusercontent.com';
 
       // Array of API discovery doc URLs for APIs used by the quickstart
       var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
@@ -62,7 +112,9 @@
         if (isSignedIn) {
           authorizeButton.style.display = 'none';
           signoutButton.style.display = 'block';
-          listMajors();
+          // listMajors();
+          errol_test();
+          // add_row();
         } else {
           authorizeButton.style.display = 'block';
           signoutButton.style.display = 'none';
@@ -99,26 +151,140 @@
        * Print the names and majors of students in a sample spreadsheet:
        * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
        */
-      function listMajors() {
+      // function listMajors() {
+      //   gapi.client.sheets.spreadsheets.values.get({
+      //     spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
+      //     range: 'Class Data!A2:E',
+      //   }).then(function(response) {
+      //     var range = response.result;
+      //     if (range.values.length > 0) {
+      //       appendPre('Name, Major:');
+      //       for (i = 0; i < range.values.length; i++) {
+      //         var row = range.values[i];
+      //         // Print columns A and E, which correspond to indices 0 and 4.
+      //         appendPre(row[0] + ', ' + row[4]);
+      //       }
+      //     } else {
+      //       appendPre('No data found.');
+      //     }
+      //   }, function(response) {
+      //     appendPre('Error: ' + response.result.error.message);
+      //   });
+      // }
+
+
+      function errol_test() {
         gapi.client.sheets.spreadsheets.values.get({
-          spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
-          range: 'Class Data!A2:E',
-        }).then(function(response) {
-          var range = response.result;
-          if (range.values.length > 0) {
-            appendPre('Name, Major:');
-            for (i = 0; i < range.values.length; i++) {
-              var row = range.values[i];
-              // Print columns A and E, which correspond to indices 0 and 4.
-              appendPre(row[0] + ', ' + row[4]);
-            }
-          } else {
-            appendPre('No data found.');
-          }
-        }, function(response) {
-          appendPre('Error: ' + response.result.error.message);
-        });
+          spreadsheetId: '1jFO9beISd9qMm1FrpGw4CAgjyxyJaUGRpscYkOCsYuo',
+          range: 'Sheet1!A:C',
+          majorDimension: "rows"
+        }).then(function(response){
+          console.log(response.result);
+
+          // var col_title = response.result.values[0]
+
+          // col_title.forEach(function(e, i){
+          //   d3.select('#errol_test_content').append('span')
+          //       .text(e + '\t')
+
+          //   })
+
+
+            var rows = response.result.values;
+
+            console.log(rows);
+
+
+            var rows = d3.select('#errol_test_content')
+                .selectAll('.table_row').data(rows)
+                .enter()
+                .append('div').classed('table_row', true)
+                .style('font', function(d, i){
+                    if (i==0) {
+                        return '900 1.3em sans-serif'
+                    }
+                })
+
+            rows.selectAll('div')
+                .data(function(d){return d;})
+                .enter().append('div')
+                .style('width', '20%')
+                .text(function(d){return d;})
+
+
+          
+
+
+
+        })
       }
+
+
+
+    function add_row(cost, category) {
+
+      var params = {
+        // The ID of the spreadsheet to update.
+        spreadsheetId: '1jFO9beISd9qMm1FrpGw4CAgjyxyJaUGRpscYkOCsYuo',  // TODO: Update placeholder value.
+
+        // The A1 notation of a range to search for a logical table of data.
+        // Values will be appended after the last row of the table.
+        range: 'Sheet1!A:C',  // TODO: Update placeholder value.
+
+        // How the input data should be interpreted.
+        valueInputOption: 'USER_ENTERED',  // TODO: Update placeholder value.
+
+        // How the input data should be inserted.
+        insertDataOption: 'INSERT_ROWS',  // TODO: Update placeholder value.
+      };
+
+      var today = new Date();
+
+
+
+      var valueRangeBody = {
+        // TODO: Add desired properties to the request body.
+        majorDimension: 'rows',
+        values: [
+            [today.toString(), cost, category],
+        ]
+      };
+
+      var request = gapi.client.sheets.spreadsheets.values.append(params, valueRangeBody);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log('written?')
+        console.log(response.result);
+        errol_test();
+      }, function(reason) {
+        console.error('error: ' + reason.result.error.message);
+      });
+    }
+
+
+    d3.select('#add_val').on('submit', function(){
+
+        d3.event.preventDefault();
+
+        var cat = d3.select(this).select('#category').node().value;
+        var cost = d3.select(this).select('#cost').node().value;
+
+       
+
+
+
+        if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+            add_row(cost, cat);
+        }
+
+        
+
+    })
+
+
+
+
+
 
     </script>
 
