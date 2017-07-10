@@ -1,0 +1,6 @@
+Basic Read Write:
+  ✔ Read and write to google sheet @done (17-07-10 15:31)
+  ✔ read/write to private sheet @done (17-07-10 15:31)
+  ☐ read/write from public web access
+  ☐ Make basic data collection page usable on phone
+  ☐ Sort out membership to open access google group for OAuth difficulties and scope
